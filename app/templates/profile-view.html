@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block script %}
+  <!-- Font Awesome ICONS-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/js/all.min.js"></script>
+
+  <!-- Jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <script src="/static/ScriptsFriendsHtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+{% block title %}
+    View self-profile
+{% endblock %}
+
+{% block body %}
+<section id="friendlist">
+  <h1 class="text-white mt-4"> <i class="fa-solid fa-address-card fa-bounce"></i> Preview </h1>
+  <div class="col text-white py-5">
+    <div class="text-end">
+      <a href="/friends" class="btn btn-success"> Go back to Friends </a></li>
+    </div>
+    <p class="text-start">
+      Click user to see their profile details~
+    </p>
+      <div class="row" style="font-size: 5px;">&nbsp;</div>
+      <div class="{{ profile['theme_status'] }} rounded p-3 friends" id="friend {{ profile['id'] }}">
+          <div class="profile px-2"> <h3 class="text-start">{{ user_data["username"] }} <span style="font-size: 16px;">{{ profile['status'] }}</span></h3></div>
+          <div class="text-end"><i> {{ profile["custom_status"] }} </i></div>
+      </div>
+      <p class="text-end py-2">
+        *This is the preview of how your profile gonna look on your friend's dashboard.
+        <br> Some button are not functional because this is just a preview
+      </p>
+
+      <!-- Offcanvas for individual friend  -->
+      <div class="offcanvas offcanvas-start text-black text-start" tabindex="-1" id="offcanvas friend {{ profile['id'] }}" aria-labelledby="offcanvasLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title " id="offcanvasLabel"> Friend Details </h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div class="container"><br>
+
+            <!-- Friend's biodata -->
+            <h1 class="tight"> {{ user_data["username"] }}
+              <button type="submit" style="border: none; background-color: rgba(0, 0, 0, 0);"><i class="align-middle far fa-edit" style="font-size: 20px; color: black;"></i></button>
+            </h1>
+            <h8> <i> {{ user_data["username"] }} </i> </h8> <br> <br>
+            &#127874; {{ profile["birthday"] }} <br><br>
+            <p style="white-space: pre">{{ profile["custom_status"] }}</p>
+            <br>
+
+            {% if profile["instagram"] or profile["email"] or profile["phone"] %}
+            <!-- Social Media -->
+            Get in touch with <b>{{ user_data["username"] }}</b> : <br>
+
+              <!-- Instagram -->
+              {% if profile["instagram"] %}
+                <div class="profile" style="font-size: 5px;">&nbsp;</div>
+                <a class="btn btn-primary" style="background-color: #ac2bac; border-color: rgba(0, 0, 0, 0);" target="_blank" href="http://instagram.com/{{ profile['instagram'] }}" role="button">
+                  <i class="fab fa-instagram me-2"></i>
+                  {{ profile["instagram"] }}
+                </a>
+              {% endif %}
+
+              <!-- Whatsapp -->
+              {% if profile["phone"] %}
+                <div class="profile" style="font-size: 5px;">&nbsp;</div>
+                <a class="btn btn-primary" style="background-color: #25d366; border-color: rgba(0, 0, 0, 0);" target="_blank" href="https://api.whatsapp.com/send?phone={{ profile['phone'] }}" role="button">
+                  <i class="fab fa-whatsapp me-2"></i>
+                  {{ profile["phone"] }}
+                </a>
+              {% endif %}
+
+              <!-- email -->
+              {% if profile["email"] %}
+                <div class="profile" style="font-size: 5px;">&nbsp;</div>
+                <a class="btn btn-primary" style="background-color: #dd4b39; border-color: rgba(0, 0, 0, 0);" target="_blank" href="mailto:{{ profile['email'] }}" role="button">
+                  <i class="far fa-envelope me-2"></i>
+                  {{ profile["email"] }}
+                </a>
+              {% endif %}
+            {% endif %}
+            <br><br><small class="px-2"><i>The more social data you input, the more complete your profile gonna look.</i></small>
+          </div>
+          <!-- Button to delete friend -->
+          <div class="position-absolute bottom-0 end-0">
+            <button type="button" class="btn btn-danger m-4">
+              Delete friend
+            </button>
+          </div>
+        </div>
+      </div>
+  </div>
+</section>
+
+<!-- Just for this spesific html, desctivate scroll-bar-->
+<style>
+  html, body {margin: 0; height: 100%; overflow: hidden}
+</style>
+
+{% endblock %}

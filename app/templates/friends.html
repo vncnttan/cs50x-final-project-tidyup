@@ -1,0 +1,311 @@
+{% extends "layout.html" %}
+{% block script %}
+  <!-- Font Awesome ICONS-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/js/all.min.js"></script>
+
+  <!-- Jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <script src="/static/ScriptsFriendsHtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock%}
+{% block title %}
+    Friends
+{% endblock %}
+
+{% block body %}
+<!-- Placeholder for the friend list if users does not complete their profile yet -->
+<section id="friendplaceholder" aria-hidden="true" style="display: none">
+  <p class="text-center text-white mt-4"><b>To unlock the friend section you must complete your <a href="#socialProfile">social profile</a> first! </b> <br>
+  Only the red one are required to be filled</p>
+</section>
+
+<!-- Friend list section -->
+<section id="friendlist">
+  <h1 class="text-white mt-5"><i class="fa-solid fa-user-group fa-bounce"></i> FRIENDS </h1>
+
+  <!-- Add friend button -->
+  <div class="text-white text-start py-4" style="display: flex; justify-content: space-between;">
+    <div class="container text-start">
+      <a href="/friends/invitations" class="btn btn-secondary position-relative">
+        <i class="fa-solid fa-inbox mx-1"></i> Friend Invitation
+        {% if invitation_notif > 0 %}
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          {{ invitation_notif }}
+          <span class="visually-hidden">unread messages</span>
+        </span>
+        {% endif %}
+      </a>
+    </div>
+    <div class="container text-end position-relative">
+      <form action="/friends/add-friend" method="get" class="align-top">
+        <input type="hidden" value="tidyup" name="method">
+        <button type="submit" class="btn text-white bg-logo-theme-alt"> <i class="fa-solid fa-user-plus mx-1"></i> Add Friend on tidyup </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col text-white">
+    <div class="px-5 text-white text-start"> Friend count : {{ friend_count }} </div>
+    {% if friend_count == 0 %}
+      <h4 class="py-4"> You have no friend, start <a href="/friends/add-friend">adding friends</a> now <br><small class="text-secondary">Oh you poor little thing having no friends <i class="fa-solid fa-face-sad-cry fa-beat-fade"></i></small></h4>
+      <img class="img-fluid" src="https://www.nicepng.com/png/detail/32-325056_friends-transparent-cartoon-person-with-no-friends-cartoon.png" alt="sad-face">
+      {% endif %}
+
+
+    {% for row in friends %}
+      <div class="row" style="font-size: 5px;">&nbsp;</div>
+      <div class="{{ row['theme_status'] }} rounded p-3 friends" id="friend {{ row['id'] }}">
+          <div class="row px-2"> <h3 class="text-start">{{ row["alias"] }} <span style="font-size: 16px;">{{ row['status'] }}</span></h3></div>
+          <div class="text-end"><i> {{ row["custom_status"] }} </i></div>
+      </div>
+
+      <!-- Offcanvas for individual friend  -->
+      <div class="offcanvas offcanvas-start text-black text-start" tabindex="-1" id="offcanvas friend {{ row['id'] }}" aria-labelledby="offcanvasLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title " id="offcanvasLabel"> Friend Details </h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div class="container">
+
+            <!-- Friend's biodata -->
+            <h1 class="tight pt-2"> {{ row["alias"] }}
+              <form class="d-inline align-top" action="/friends/edit-alias" method="get">
+                <input type="hidden" value="{{ row['id'] }}" name="id">
+                <button type="submit" style="border: none; background-color: rgba(0, 0, 0, 0);"><i class="align-middle far fa-edit" style="font-size: 20px; color: black;"></i></button>
+              </form>
+            </h1>
+            <h8> <i> {{ row["friend_name"] }} </i> </h8>
+
+            <!-- Friend's birthday -->
+            <div class="py-3">
+              &#127874; {{ row["birthday"] }} <br>
+
+              <!-- User has not submit to notify this friend birthday -->
+              {% if not row["birthday_event_id"] %}
+                <form action="/friends/notify-birthday" method="get">
+                  <input type="hidden" value="{{ row['user_friend_id'] }}" name="friendid">
+                  <button type="submit" class="btn btn-success btn-sm mt-2"><small>Notify birthday</small></button>
+                </form>
+
+              <!-- User want to cancel notif on this friend birthday -->
+              {% else %}
+                <form action="/friends/notify-birthday" method="post">
+                  <input type="hidden" value="{{ row['birthday_event_id'] }}" name="bdayeventid">
+                  <input type="hidden" value="{{ row['id'] }}" name="friendtableid">
+                  <button type="submit" class="btn btn-secondary btn-sm mt-2"><small>Notified!</small></button>
+                </form>
+              {% endif %}
+            </div>
+
+            <p class="py-4" style="white-space: pre">{{ row["custom_status"] }}</p>
+
+
+            <!-- Social Media -->
+            {% if row["user_friend_id"] %}
+            Get in touch with <b>{{ row["alias"] }}</b> : <br>
+
+              <!-- Instagram -->
+              {% if row["instagram"] %}
+                <div class="row" style="font-size: 5px;">&nbsp;</div>
+                <a class="btn btn-primary" style="background-color: #ac2bac; border-color: rgba(0, 0, 0, 0);" target="_blank" href="http://instagram.com/{{ row['instagram'] }}" role="button">
+                  <i class="fab fa-instagram me-2"></i>
+                  {{ row["instagram"] }}
+                </a>
+              {% endif %}
+
+              <!-- Whatsapp -->
+              {% if row["phone"] %}
+                <div class="row" style="font-size: 5px;">&nbsp;</div>
+                <a class="btn btn-primary" style="background-color: #25d366; border-color: rgba(0, 0, 0, 0);" target="_blank" href="https://api.whatsapp.com/send?phone={{ row['phone'] }}" role="button">
+                  <i class="fab fa-whatsapp me-2"></i>
+                  {{ row["phone"] }}
+                </a>
+              {% endif %}
+
+              <!-- email -->
+              {% if row["email"] %}
+                <div class="row" style="font-size: 5px;">&nbsp;</div>
+                <a class="btn btn-primary" style="background-color: #dd4b39; border-color: rgba(0, 0, 0, 0);" target="_blank" href="mailto:{{ row['email'] }}" role="button">
+                  <i class="far fa-envelope me-2"></i>
+                  {{ row["email"] }}
+                </a>
+              {% endif %}
+            {% endif %}
+          </div>
+
+          <!-- Button to delete friend -->
+          <div class="position-absolute bottom-0 end-0">
+            <form id="deleteFriend {{ row['id'] }}" action="/friends/del-friend" method="post">
+              <input type="hidden" value="{{ row['id'] }}" name="del_friend_id"/>
+              <span data-bs-dismiss="offcanvas" class="text-reset">
+                <button type="button" class="btn btn-danger m-4 delfriend" data-toggle="modal" data-target="#Modal" id="delFriend {{ row['id'] }}">
+                  Delete {{ row['alias'] }}
+                </button>
+              </span>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+
+
+<!-- Profile Social data -->
+<a id="socialProfile" class="anchor"></a>
+<section>
+  <div class="p-5 my-3">
+    <h1 class="text-center text-white"><i class="fa-solid fa-sync fa-spin"></i> Profile </h1>
+    <div class="p-3 text-end text-white">
+      <label class>Your Id : {{ user_data["id"] }}</label> <br>
+      {% if profile_complete == True %}
+        <a href="/friends/profile-view" class="btn btn-success my-2"><i class="fa-solid fa-address-card"></i> Preview your profile </a>
+      {% endif %}
+      <div class="form-group text-start">
+        <form action="/friends" method="post">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xl-2">
+                <!-- Input birthday date-->
+                <div class="form-group text-danger">
+                  <label for="birthdate py-3">*Birthday: </label> <br>
+                  <input type="date" id="birthdate" name="birthday" class="datepicker" value="{{ user_profile['birthday'] }}"></input>
+                </div>
+              </div>
+
+              <div class="col">
+                <!-- Input custom status -->
+                <div class="form-group text-start">
+                  <label class="text-white" for="profile_custstatus">Custom Status (max. 20 characters):</label>
+                  <input autocomplete="off" class="form-control profile_form" value="{{ user_profile['custom_status'] }}" id="profile_custstatus" name="custom_status" type="text" placeholder="omg I'm so quirky :p"/>
+                </div>
+              </div>
+
+              <div class="col-sm-3">
+                <!-- Select status -->
+                <div class="form-group text-start">
+                    <label class="text-danger" for="event_type"> *Status </label>
+                    <select class="form-control add_event_form" id="status" name="status">
+                      {% if profile_complete == False %}
+                        <option selected disabled class="text-secondary"> Choose your status... </option>
+                      {% endif %}
+                      {% for status in statuses %}
+                          {% if status == user_profile['status'] %}
+                              <option selected> {{ status }} </option>
+                          {% else %}
+                              <option> {{ status }} </option>
+                          {% endif %}
+                      {% endfor %}
+                    </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <!-- Input email -->
+                    <div class="form-group text-start">
+                      <label>Bind your account to gmail:</label>
+                      {% if not user_data["email_binded"] %}
+                        <!-- Google sign in-->
+                        <div id="g_id_onload"
+                            data-client_id="975330618542-vglsd8umiv11f5sl8k4ns5rh281f8fkv.apps.googleusercontent.com"
+                            data-login_uri="https://vncnttan-code50-96110981-r4w994wg6fwq59-5000.githubpreview.dev/login/google"
+                            data-auto_prompt="false"
+                            data-ux_mode="popup">
+                        </div>
+                        <div class="g_id_signin"
+                            data-type="standard"
+                            data-size="large"
+                            data-theme="filled_blue"
+                            data-text="sign_in_with"
+                            data-shape="rectangular"
+                            data-logo_alignment="left">
+                        </div>
+                      {% else %}
+                        <label><b>You have binded this tidyup account to {{ user_data["email_binded"] }} </b></label>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-sm-4">
+                <div class="row">
+                  <div class="col">
+                    <!-- Input Instagram -->
+                    <div class="form-group text-start">
+                      <label class="text-white" for="profile_instagram">Instagram:</label>
+                      <input autocomplete="off" class="form-control profile_form" value="{{ user_profile['instagram'] }}" id="profile_instagram" name="instagram" type="text" placeholder="ex: @vncnt_tan or vncnt_tan"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="row">
+                  <div class="col">
+                    <!-- Input Whatsapp -->
+                    <div class="form-group text-start">
+                      <label class="text-white" for="profile_whatsapp">Whatsapp:</label>
+                      <input autocomplete="off" class="form-control profile_form" value="{{ user_profile['phone'] }}" id="profile_whatsapp" name="whatsapp" type="tel" placeholder="Must be all numeric"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <button class="btn btn-success m-3" type="submit"> Save Changes </button>
+          </div>
+        </form>
+      </div>
+      <div class="text-start">
+        <small>
+          * Starred content must be filled <br>
+          ** Profile data that is not in accordance to our format will be replaced by blank (including non-number phone, invalid email format, etc.) <br>
+          *** Tidyup! will not check the validity of your profile data
+        </small>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- Script to not show content yet if not yet completing their profile -->
+{% if profile_complete == False %}
+  <script>
+    document.getElementById("friendlist").style.display = "none";
+    document.getElementById("friendplaceholder").style.display = "block";
+  </script>
+{% endif %}
+
+<!-- Modal -->
+<div class="modal text-dark" tabindex="-1" role="dialog" id="Modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Friend</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this friend? </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" id="deleteFriend" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

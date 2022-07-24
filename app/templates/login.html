@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block body %}
+    <div class="row px-5 mb-4">
+        <h3 class="text-white text-center p-5"> Login </h3> <br>
+        <form name="register" action="/login" method="post">
+            <div class="form-outline mb-3">
+                <input autocomplete="off" autofocus class="form-control register_form" id="username" name="username" type="text">
+                <label class="form-label text-white" for="username">Username</label>
+            </div>
+            <div class="form-outline mb-3">
+                <input class="form-control register_form" id="password" name="password" type="password">
+                <label class="form-label text-white" for="password">Password</label>
+            </div>
+            <button class="btn btn-primary" type="submit">Login</button>
+        </form>
+    </div>
+
+    <div class="p-5">
+        <p class="text-white text-start"> or login using
+            <!-- Google sign in-->
+            <div id="g_id_onload"
+                data-client_id="975330618542-vglsd8umiv11f5sl8k4ns5rh281f8fkv.apps.googleusercontent.com"
+                data-login_uri="https://vncnttan-code50-96110981-r4w994wg6fwq59-5000.githubpreview.dev/login/google"
+                data-auto_prompt="false"
+                data-ux_mode="popup">
+            </div>
+            <div class="g_id_signin"
+                data-type="standard"
+                data-size="large"
+                data-theme="filled_blue"
+                data-text="sign_in_with"
+                data-shape="rectangular"
+                data-logo_alignment="left">
+            </div>
+        </p>
+    </div>
+{% endblock %}

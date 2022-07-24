@@ -1,0 +1,211 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Index
+{% endblock %}
+
+{% block script %}
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/js/all.min.js"></script>
+
+    <!-- Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
+    <!-- Jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/static/indexHtml.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+
+{% block body %}
+    <!-- The title section -->
+    <section>
+        <div class="p-5 my-3 text-center text-white">
+            <h1 class="text-center text-white tight"> Hi, {{ user_data["username"] }} <i class="fa-solid fa-hand-peace"></i> </h1>
+            <h4>Hope you have a great day today!</h4>
+        </div>
+        <div class="text-end mx-4 text-white">
+            <h4> <b> Today is {{ today_legible_date }} </b></h4>
+        </div>
+    </section>
+
+    <!-- The short event section -->
+    <section class="mx-4 text-white text-start mb-5">
+        <h3>Short Events <i class="fa-solid fa-calendar-day fa-flip mx-1" style="--fa-animation-duration: 3s;"></i></h3>
+        {% if not short_events %}
+            <div>
+                You have no event today! Let's take a meaningful rest before we work hard again tommorrow! <br>
+                Plan what to do tommorrow <a href="/events/add-event"> here </a>
+            </div>
+        {% else %}
+                <div class="text-start text-white">
+                    Here's today events!
+                </div>
+
+
+            <!-- For responsive container -->
+            <div class="container-fluid">
+                <div class="row mt-4">
+                    {% for row in short_events %}
+                        <div class="col {{ row['event_color'] }} short_events border border-white" id="short event {{ row['id'] }}">
+                            <div class="row-2">
+                                <div class="col p-3">
+                                    <i class="{{ row['event_icon'] }}"></i> {{ row["event_type"] }}
+                                    <h4 class="mt-4 text-end">
+                                        {{ row["event_name"] }}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    {% if loop.index % 4 == 0 %}
+                </div>
+                <div class="row">
+                    {% endif %}
+
+                        <!-- Offcanvas short event -->
+                        <div class="offcanvas offcanvas-start text-black text-start" id="offcanvas short event {{ row['id'] }}" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+                            <div class="offcanvas-header">
+                                <h5 class="offcanvas-title " id="offcanvasLabel"> Event Details </h5>
+                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body">
+                                <h8 class="tight">{{ today_legible_date }}</h8>
+                                <h1 class="tight">{{ row["event_name"] }} <i class="{{ row['event_icon'] }} mx-1"></i></h1> <br>
+                                <i class="{{ row['notif_icon'] }}"></i>
+                                <a data-toggle="tooltip" title="Edit notification settings using edit event" style="text-decoration: none;"> Remind this event on email </a>
+                                <p> Event type : <i class="{{ row['event_icon'] }}"></i> {{ row['event_type'] }} </p>
+
+                                <p style="white-space: pre">Event details: <br>{{ row["event_description"] }}</p><br>
+
+                                <!-- A button to edit the event -->
+                                <form action="/events/edit-short-event" method="post">
+                                    <input type="hidden" value="{{ row['id'] }}" name="edit_event_id"/>
+                                    <button class="btn btn-secondary" type="submit"> Edit Event </button>
+                                </form>
+
+                                <!-- A button to delete event -->
+                                <div class="position-absolute bottom-0 end-0">
+                                    <div class="delete_event">
+                                        <form id="deleteForm {{ row['id'] }}" action="/events/del-short-event" method="post">
+                                            <input type="hidden" value="{{ row['id'] }}" name="del_event_id"/>
+                                            <input type="hidden" value="{{ row['event_name'] }}" id="del_short_name {{ row['id'] }}" name="del_event_name"/>
+                                            <span data-bs-dismiss="offcanvas" class="text-reset">
+                                                <button type="button" class="btn btn-danger m-4 delshortevbtn" data-toggle="modal" data-target="#Modal" id="delShortEvBtn {{ row['id'] }}">
+                                                    Delete this event
+                                                </button>
+                                            </span>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- The long event section -->
+    <section class="mx-4 text-white text-start mb-5">
+        <h3 class="text-end ">Multi Day Events <i class="fa-solid mx-1 fa-calendar-days fa-flip" style="--fa-animation-duration: 3s;""></i></h3>
+        {% if not long_events %}
+            <div class="text-end">
+                You have no Multi-day Events occuring today. Sign up for multi-day events such as courses or competitions. <br>
+                Plan what to do tommorrow <a href="/events/add-event/longevcheck"> here </a>
+            </div>
+        {% else %}
+            <div class="container-fluid">
+                <div class="text-end text-white">
+                    Here's an occuring Multi-day Events!
+                </div>
+            </div>
+
+            <!-- For responsive container -->
+            <div class="container-fluid">
+                <div class="row mt-4">
+                    {% for row in long_events %}
+                        <div class="col {{ row['event_color'] }} long_events border border-white" id="long event {{ row['id'] }}">
+                            <div class="row-2">
+                                <div class="col p-3">
+                                    {{ row["days_left"] }} days left <br>
+                                    <i class="{{ row['event_icon'] }}"></i> {{ row['event_type'] }}
+                                    <h4 class="mt-4 text-end">
+                                        {{ row["event_name"] }}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    {% if loop.index % 4 == 0 %}
+                </div>
+                <div class="row">
+                    {% endif %}
+                        <!-- Offcanvas event for long event (for one-day event can you find in the calendar.js) -->
+                        <div class="offcanvas offcanvas-start text-black text-start" tabindex="-1" id="offcanvas long event {{ row['id'] }}" aria-labelledby="offcanvasLabel">
+                            <div class="offcanvas-header">
+                                <h5 class="offcanvas-title " id="offcanvasLabel"> Event Details </h5>
+                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body">
+                                <h8 class="tight">{{ row["event_date_start"] }} - {{ row["event_date_end"] }}</h8>
+                                <h1 class="tight">{{ row["event_name"] }} <i class="{{ row['event_icon'] }}"></i> </h1> <br>
+                                {% if row["notify_email"] == 'True' %}
+                                    <i class="fa-solid fa-bell fa-shake" aria-hidden="true"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-bell-slash" aria-hidden="true"></i>
+                                {% endif %}
+                                <a data-toggle="tooltip" title="Edit notification settings using edit event" style="text-decoration: none;"> Remind this event on email </a>
+                                <p> Long event type : <i class="{{ row['event_icon'] }}"></i> {{ row['event_type'] }}</p>
+                                <p style="white-space: pre">Event Details : <br>{{ row["event_description"] }} </p><br>
+
+                                <!-- A button to edit the event -->
+                                <form action="/events/edit-long-event" method="post">
+                                    <input type="hidden" value="{{ row['id'] }}" id="edit_event_id" name="edit_event_id">
+                                    <button class="btn btn-secondary" type="submit"> Edit Event </button>
+                                </form>
+
+                                <!-- Button trigger are you sure modal after clicking the delete event-->
+                                <div class="position-absolute bottom-0 end-0">
+                                    <form id="deleteForm {{ row['id'] }}" action="/events/del-long-event" method="post">
+                                        <input type="hidden" value="{{ row['id'] }}" name="del_long_event_id"/>
+                                        <input type="hidden" value="{{ row['event_name'] }}" id="del_long_name {{ row['id'] }}" name="del_long_event_name"/>
+                                        <span data-bs-dismiss="offcanvas" class="text-reset">
+                                            <button type="button" class="btn btn-danger m-4 dellongevbtn" data-toggle="modal" data-target="#Modal" id="delLongEvBtn {{ row['id'] }}">
+                                            Delete this event
+                                            </button>
+                                        </span>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+
+
+<!-- Modal -->
+  <div class="modal text-dark" tabindex="-1" role="dialog" id="Modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Event</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this event? </p>
+          <h5 id="eventname"></h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" id="submit" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

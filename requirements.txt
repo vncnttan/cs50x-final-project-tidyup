@@ -1,0 +1,8 @@
+cs50
+Flask-Session
+Flask-Mail
+google-auth
+redis
+celery
+python-dateutil
+requests
