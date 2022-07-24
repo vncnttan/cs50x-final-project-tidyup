@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block title %}
+    Friend Invitations
+{% endblock %}
+{% block body %}
+
+<h1 class="text-white p-4"> <i class="fa-solid fa-inbox fa-bounce mx-1"></i> Invitation </h1>
+
+<!-- Friend Invited section -->
+<section>
+    <div class="px-5 text-white text-start">
+        <div class="container text-end">
+            <div class="col text-white mb-5">
+                <p class="text-start"><i class="fa-solid fa-arrow-right-to-bracket mx-1"></i> Invite sent to you: </p>
+                {% if inboxcount == 0 %}
+                    <h5 class="text-center p-5"> Nothing is in your inbox! </h5>
+                {% endif %}
+                <!-- Todo : rapihin kontennya -->
+                {% for row in inviteinbox %}
+                  <div class="bg-logo-theme-alt rounded p-3 friends" id="friend {{ row['id'] }}">
+                      <div class="row px-2"> <h3 class="text-start">{{ row["username"] }} <span style="font-size: 16px;"> has requested you to be their friend</span></h3></div>
+                      <div class="text-end d-inline">
+                        <form action="/friends/invitations/cancel-inv" method="post" class="d-inline">
+                            <input type="hidden" value="{{ row['id'] }}" name="id"/>
+                            <button type="submit" class="btn btn-danger">
+                                Reject invitation
+                            </button>
+                        </form>
+                        <form action="/friends/invitations/accept-inv" method="post" class="d-inline">
+                            <input type="hidden" value="{{ row['id'] }}" name="id"/>
+                            <button type="submit" class="btn btn-success">
+                                Accept invitation
+                            </button>
+                        </form>
+                      </div>
+                  </div>
+                  <div class="row" style="font-size: 5px;">&nbsp;</div>
+               {% endfor %}
+              </div>
+
+              <div class="col text-white py-2">
+                <p class="text-start"><i class="fa-solid fa-arrow-right-from-bracket mx-1"></i> Invite you sent: </p>
+                {% if sentcount == 0 %}
+                    <h5 class="text-center p-5"> There is no pending invitation! </h5>
+                {% endif %}
+                {% for row in invitesent %}
+                  <div class="bg-purple-alt rounded p-3 friends" id="friend {{ row['id'] }}">
+                      <div class="row px-2"> <h3 class="text-start">{{ row["username"] }} <span style="font-size: 16px;"> still has not accepted your friend request</span></h3></div>
+                      <div class="text-end">
+                        <form action="/friends/invitations/cancel-inv" method="post">
+                            <input type="hidden" value="{{ row['id'] }}" name="id"/>
+                            <button type="submit" class="btn btn-danger">
+                                Cancel invitation
+                            </button>
+                        </form>
+                      </div>
+                  </div>
+                  <div class="row" style="font-size: 5px;">&nbsp;</div>
+               {% endfor %}
+              </div>
+        </div>
+    </div>
+{% endblock %}

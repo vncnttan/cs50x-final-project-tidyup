@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block script %}
+  <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
+  <script src="/static/ScriptsAddEventHtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+
+{% block style %}
+  <link href="/static/animatedTabs.css" rel="stylesheet" />
+{% endblock %}
+
+{% block title %}
+    Add Events
+{% endblock %}
+
+{% block body %}
+<h1 class="text-white pt-5"><i class="fa-solid fa-calendar-plus mx-1 fa-bounce"></i> Add Event </h1>
+<form name="add_short_event" action="/events/add-event" method="post">
+<!-- Tab -->
+<div class="wrapper">
+    <div class="tabs">
+      <div class="tab">
+        <input type="radio" name="css-tabs" id="tab-0" disabled class="tab-switch">
+        <label for="tab-0" class="ms-4 px-3 py-2">Choose Event class:</label>
+      </div>
+      <!-- For short events -->
+      <div class="tab" id="one-day-event-tab">
+        {% if not longevcheck %}
+          <input type="radio" name="css-tabs" id="tab-1" checked class="tab-switch">
+        {% else %}
+          <input type="radio" name="css-tabs" id="tab-1" class="tab-switch">
+        {% endif %}
+        <label for="tab-1" class="tab-label">One day event</label>
+        <div class="tab-content">
+          <p>
+            Add events that lasts one day-only, perfect for meetings, tests, and other reminder.
+            tidyup! will automatically assign color and emoji to your scheduled events. It will appear on your events calendar and tidyup! will remind it for you in your dashboard on the d-DAY.
+          </p>
+          <label for="event_date" class="text-danger"><b>Pick a date:</b> </label> <br>
+          <input type="date" id="event_date" name="event_date" class="datepicker" min="{{ now }}"></input>
+        </div>
+      </div>
+
+      <!-- For Multi-day Events-->
+      <div class="tab" id="long-event-tab">
+        {% if longevcheck %}
+          <input type="radio" name="css-tabs" checked id="tab-2" class="tab-switch">
+        {% else %}
+          <input type="radio" name="css-tabs" id="tab-2" class="tab-switch">
+        {% endif %}
+        <label for="tab-2" class="tab-label">Long event</label>
+        <div class="tab-content">
+          <p>
+            Add events that lasts more than one day, perfect for courses, trips, and other plans.
+            tidyup! will automatically assign color and emoji to your scheduled events. It will appear on your events list and it will appear on your dashboard when your events are ongoing.
+          </p>
+          <label for="event_start_date" class="text-danger">Start Date: </label>
+          <input type="date" id="start" name="event_start_date" class="datepicker" min="{{ now }}"></input> <br>
+          <label for="event_end_date" class="text-danger">End Date: </label>
+          <input type="date" id="end" name="event_end_date" class="datepicker" min="{{ now }}"></input>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-10">
+
+          <!-- Input name -->
+          <div class="form-group text-start">
+            <label class="text-danger" for="event_name" class="text-danger"><b>Event name (max. 50 characters)</b></label>
+            <input autocomplete="off" class="form-control add_event_form" id="event_name" name="event_name" type="text" />
+          </div>
+
+          <!-- Input Details -->
+          <div class="form-group text-start">
+            <label class="text-white" for="event_description">Event details</label>
+            <textarea class="form-control add_event_form" id="event_description" name="event_desc" type="text"></textarea>
+          </div>
+        </div>
+
+        <!-- Select types of event -->
+        <div class="col-2">
+          <div class="container-fluid text-start">
+            <label for="categories">Event type :</label>
+            {% for category in types %}
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="categories" id="{{ category }}" value="{{ category }}" />
+                <label class="form-check-label text-white" for="{{ category }}">{{ category }}</label>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Check if user wanna get it notified on their email -->
+        <div class="form-check text-white text-start mx-2">
+          {% if user_data["email_binded"] %}
+            <!-- User done the requirements -->
+            <input class="form-check-input" type="checkbox" name="email_reminder" value="True" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault"> Remind me on email when the event start </label>
+          {% else %}
+            <!-- User has not bind their account with email -->
+            <input class="form-check-input" type="checkbox" name="email_reminder" value="True" id="flexCheckDefault" disabled>
+            <label class="form-check-label" for="flexCheckDefault">
+              <a data-toggle="tooltip" title="You need to bind your email to this tidyup account" style="text-decoration: none;" class="text-white">Remind me on email when the event start</a>
+            </label>
+          {% endif %}
+          <!-- Get rid of the border because it was ugly with it-->
+          <style> .form-check-input[type=checkbox]:checked:after{
+            border: 0 !important
+          }
+          </style>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-success m-3" type="submit"> Add Event </button>
+  </form>
+{% endblock %}

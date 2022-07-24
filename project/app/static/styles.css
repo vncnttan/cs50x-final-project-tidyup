@@ -1,0 +1,132 @@
+body {
+    background-color: #131320 !important;
+    padding-top: 65px;
+}
+
+#landing-brand {
+    font-size: 60px;
+}
+
+nav .navbar-brand {
+    font-size : xx-large;
+}
+
+.brand-teal {
+    color: #00cc99;
+}
+
+.navbar { box-shadow: none !important; }
+
+/* Landing Page */
+#benefit1 {
+    color: #ff5050;
+}
+
+#benefit2 {
+    color: #ff52a8;
+}
+
+#benefit3 {
+    color: #52ff52;
+}
+
+#benefit4 {
+    color: #ffff52;
+}
+
+#cat {
+    width: 100px;
+    height: 100px;
+}
+
+.register_form {
+    background-color: #131320;
+    border: solid 1px #304582 !important;
+    font-size: 18px;
+    height: 37px;
+}
+
+.btn { text-transform: none !important; }
+
+.register_form:focus {
+    background-color: #131320;
+    color: white;
+}
+
+input[type="text"], textarea {
+    color : white;
+}
+
+
+/* Event Calendar */
+#calendar {
+    min-height: 700px;
+    min-width: 375px;
+    position: relative;
+}
+
+.spinner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+/* Add Event */
+.add_event_form {
+    background-color: #131320;
+    border: solid 1px #304582 !important;
+    font-size: 18px;
+    height: 37px;
+    color: white;
+}
+
+.add_event_form:focus {
+    background-color: #131320;
+    color: white;
+}
+
+textarea {
+    width: 300px;
+    height: 180px !important;
+  }
+
+/* Offcanvas event calendar */
+.tight {
+    margin : 0;
+    line-height : 40px;
+}
+
+/* Profile Status form on friends.html */
+.profile_form {
+    background-color: #131320;
+    border: solid 1px #304582 !important;
+    font-size: 18px;
+    height: 37px;
+    color: white;
+}
+
+.profile_form:focus {
+    background-color: #131320;
+    color: white;
+}
+
+.anchor {
+    display:block;
+    padding-top:50px;
+    margin-top:-50px;
+ }
+
+ /* add-friend.html */
+.add_friend_form {
+    background-color: #131320;
+    border: solid 1px #304582 !important;
+    font-size: 18px;
+    height: 37px;
+    color: white;
+    width: 500px !important;
+}
+
+.add_friend_form:focus {
+    background-color: #131320;
+    color: white;
+}

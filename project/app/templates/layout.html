@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+
+<HTML lang="en">
+
+    <HEAD>
+        <!-- For rensponsiveness -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+        <meta name="google-signin-client_id" content="975330618542-dk06of2kvgo4e2srnq8anjct11tsosct.apps.googleusercontent.com">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/js/all.min.js"></script>
+
+        <!-- https://mdbootstrap.com/docs/standard/getting-started/installation/ -->
+        <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css"
+        rel="stylesheet"
+        />
+        <script
+        type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"
+        ></script>
+
+        <!-- Integrating google sign-in -->
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+        <!-- Font Awesome -->
+        <script src="https://kit.fontawesome.com/0de67d7e5f.js" crossorigin="anonymous"></script>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+        {% block script %} {% endblock %}
+
+        <!-- https://cdnjs.com/libraries/moment.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"> </script>
+
+
+
+        {% block style %} {% endblock %}
+        <!-- http://getbootstrap.com/docs/5.1/ -->
+        <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet">
+        <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"></script>
+
+        <!-- the logo -->
+        <link href="/static/uplogo.png" rel="icon">
+
+        <link href="/static/theme.css" rel="stylesheet">
+        <link href="/static/styles.css" rel="stylesheet">
+
+        <title>tidyup : {% block title %}{% endblock %} </title>
+
+    </HEAD>
+
+
+    <BODY>
+        <nav class="navbar navbar-expand-md px-4 navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand mb-1" href="/">
+                    <span class="brand-teal">tidy</span>up!
+                </a>
+
+                {% if session["user_id"] %}
+                    <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbar">
+                        <ul class="navbar ms-auto mb-2 mb-lg-0">
+                            <li class="nav-item px-2"><a href="/" class="nav-link text-light"><i class="fa-solid fa-house"></i> Home</a></li>
+                            <li class="nav-item"><a href="/events" class="nav-link text-light"><i class="fa-solid fa-calendar-day"></i> Events</a></li>
+                            <li class="nav-item"><a href="/friends" class="nav-link text-light"><i class="fa-solid fa-user-group"></i> Friends</a></li>
+                            <li>
+                                <div class="badge bg-success text-wrap px-1">
+                                    <a class="nav-link text-light" data-bs-toggle="offcanvas" href="#mainoffcanvas" role="button" aria-controls="offcanvasExample">
+                                        {{ user_data['username'] }} <i class="fa-solid fa-cog mx-1"></i>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+
+                <div class="navbar justify-content-end">
+                    <a href="/login" class="nav-link text-light">Log in</a>
+                    <div class="badge bg-success text-wrap p-1">
+                        <a href="landing#register_section" class="nav-link text-light">New here? Register</a>
+                    </div>
+                </div>
+
+                {% endif %}
+            </div>
+        </nav>
+
+        <!-- General menu offcanvas -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="mainoffcanvas" aria-labelledby="mainoffcanvasLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title " id="offcanvasLabel"><i class="fa-solid fa-cog fa-spin"></i> Menu </h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body m-2">
+                <h1 class="tight"> hi, {{ user_data["username"] }} </h1>
+                <h4 class="tight"> Your ID : <b>{{ user_data["id"] }}</b> </h4>
+                <p>Use id to add other as a friend. <br> Sidenote: you need to complete your social profile data first to accept friend requests</p><br>
+                <p style="white-space: pre">Change your data:</p>
+
+                <!-- Edit username -->
+                <a class="btn btn-secondary" href="/edit-username"><i class="fa-solid fa-pencil mx-1"></i> Edit username </a> <br>
+
+                <!-- Link to edit social data -->
+                <a class="btn btn-primary my-1" href="/friends#socialProfile"> <i class="fa-solid fa-sync mx-1"></i> Edit your social data </a>
+
+                <label class="pt-5">Bind or login to your account to gmail:</label>
+                      {% if not user_data["email_binded"] %}
+                        <!-- Google sign in-->
+                        <div id="g_id_onload"
+                            data-client_id="975330618542-vglsd8umiv11f5sl8k4ns5rh281f8fkv.apps.googleusercontent.com"
+                            data-login_uri="https://vncnttan-code50-96110981-r4w994wg6fwq59-5000.githubpreview.dev/login/google"
+                            data-auto_prompt="false"
+                            data-ux_mode="popup">
+                        </div>
+                        <div class="g_id_signin"
+                            data-type="standard"
+                            data-size="large"
+                            data-theme="filled_blue"
+                            data-text="sign_in_with"
+                            data-shape="rectangular"
+                            data-logo_alignment="left">
+                        </div>
+                      {% else %}
+                        <label><b>You have binded this tidyup account to {{ user_data["email_binded"] }} </b></label>
+                      {% endif %}
+
+                <!-- Logout link -->
+                <div class="position-absolute bottom-0 end-0">
+                    <a class="btn btn-danger m-4" href="/logout">
+                        Logout
+                    </a>
+              </div>
+            </div>
+            </div>
+          </div>
+
+        {% if request.path != "/landing" %}
+            {% if get_flashed_messages() %}
+                <header>
+                    <div class="alert alert-warning alert-dismissible fade show text-center my-2" role="alert">
+                        {{ get_flashed_messages() | join(" ") }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </header>
+            {% endif %}
+        {% endif %}
+
+        <main class="container-fluid py-3 text-center text-white">
+        {% block body %}
+        {% endblock %}
+        </main>
+
+
+        {% if request.path != "/login" and request.path != "/friends/add-friend" and request.path != "/friends/tidyup-invites" %}
+            <footer class="p-3 bg-dark text-white text-center position-relative">
+                <div class="container">
+                    <p>Made with &hearts; by Vincent Tanjaya <br>
+                    <a target="_blank" class="mx-1" href="https://github.com/vncnttan" style="text-decoration: none;"><i class="fab fa-github"></i> vncnttan </a> | <a target="_blank" class="mx-1" href="https://www.instagram.com/vncnt_tan/" style="text-decoration: none;"> <i class="fa-brands fa-instagram"></i> vncnt_tan </a> | <a target="_blank" class="mx-1" href="mailto:vincent.tanjaya.vt@gmail.com" style="text-decoration: none;"><i class="fa-solid fa-envelope"></i> vincent.tanjaya.vt@gmail.com</a> <br>
+                    Made for CS50x 2022 : Introduction to the intellectual enterprises of computer science and the art of programming - Final Project
+                    </p>
+                </div>
+            </footer>
+        {% endif %}
+    </BODY>
+</HTML>
