@@ -1,4 +1,6 @@
-# TIDYUP!
+<img src="./app/static/TidyupFullLogo.png">
+
+# Tidyup!
 #### Video Demo:  https://youtu.be/uRg5OgE7frI
 #### Description:
 Tidyup! is a web-based basic event scheduler and reminder that is easy-to-use, simple, and straightforward because tidyup! has already set event types with their corresponding colour and emoji. The downside of this is, your calendar and event are **not customizable or unique** per user. What unique in tidyup! is that tidy-up is *half a social media* too. You can **add users to get their social media data and their birthdate**. You can add their birthday to your event calendar automatically with just a single click. You will get a notifier from tidyup using email when the event occurs *(this feature require you to bind your account us   ing email)*.
@@ -194,7 +196,7 @@ Special thanks to:
 Early tester and design/color theme consultant
 > "The color tones was too bright and contrast🧑‍🎨, try this color pallete instead 🖌️"
 >
-> "The text was too small 🤏, maybe consider make it bigger"
+> "The text was too small 🤏, maybe consider making it bigger"
 
 Socials:
 - Instagram: [@davidchrs](https://www.instagram.com/davidchrs/)
